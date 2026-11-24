@@ -27,3 +27,9 @@ Modest and honest: AUC is 0.67, and training on the east and testing on the west
 Static files. `python3 -m http.server` in this folder. To rebuild: download the `lossyear` and `treecover2000` tiles, run `train/prep.py` then `train/model.py` (numpy, scipy, scikit-learn, tifffile, zarr).
 
 MIT licence.
+
+## Notes on rigor
+
+- The model was fit once. No hyperparameter was tuned against the held-out strip.
+- Features use windows up to 9 km, so some feature windows of held-out cells reach into the 8-cell gap and the training side. Labels never cross the gap.
+- AUC by three horizontal bands of the held-out strip: 0.68, 0.57, 0.61. The headline 0.67 is one draw, not a tight estimate.

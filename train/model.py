@@ -53,6 +53,8 @@ M = dict(cell_m=150, base_rate=float(yte.mean()), train_base_rate=float(ytr.mean
 tr2 = forest & (cols >= cut + 8); te2 = forest & (cols < cut - 8)
 m2 = HistGradientBoostingClassifier(max_iter=200, learning_rate=0.06, max_leaf_nodes=16, min_samples_leaf=60, l2_regularization=2.0, random_state=0).fit(X[tr2], y_cell[tr2])
 M['swapped_auc'] = float(roc_auc_score(y_cell[te2], m2.predict_proba(X[te2])[:, 1]))
+rows = np.arange(H)[:, None].repeat(W, 1)[test_m]
+M['band_auc'] = [float(roc_auc_score(yte[(rows >= a) & (rows < b)], p_model[(rows >= a) & (rows < b)])) for a, b in [(0, H // 3), (H // 3, 2 * H // 3), (2 * H // 3, H)]]
 rng = np.random.default_rng(1); si = rng.choice(len(yte), min(40000, len(yte)), replace=False)
 ap0 = average_precision_score(yte[si], model.predict_proba(Xte[si])[:, 1]); imp = {}
 for j, n in enumerate(names):

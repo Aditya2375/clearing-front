@@ -26,18 +26,20 @@
 
 <section id="map" class="mapsec">
   <div class="head"><h2>The map</h2><p>Each dot is a 150 m cell, about 2 hectares. The line marks where training stops. Everything right of it is held-out ground.</p></div>
-  <div class="tabs" role="tablist" aria-label="Layer">
-    <button role="tab" data-layer="outcome" aria-selected="true">What happened</button>
-    <button role="tab" data-layer="risk" aria-selected="false">Model risk</button>
-    <button role="tab" data-layer="flag" aria-selected="false">Flagged vs outcome</button>
+  <div class="tabs" role="group" aria-label="Map layer">
+    <button data-layer="outcome" aria-pressed="true">What happened</button>
+    <button data-layer="risk" aria-pressed="false">Model risk</button>
+    <button data-layer="flag" aria-pressed="false">Flagged vs outcome</button>
   </div>
   <div class="stage">
-    <canvas id="cv" width="800" height="600" aria-label="Map of forest, past clearing, model risk and later clearing"></canvas>
+    <canvas id="cv" width="800" height="600" role="img" aria-label="Map of forest, past clearing, model risk and later clearing. Hover to read a cell."></canvas>
+    <div id="tip" class="tip" hidden></div>
+    <div class="scale"><i></i><span>10 km</span></div>
     <div id="legend" class="legend"></div>
   </div>
   <div class="ctl" id="flagctl" hidden>
     <label>Flag the riskiest <b id="pct">10</b>% of held-out forest<input id="slider" type="range" min="1" max="50" value="10"></label>
-    <div class="live">
+    <div class="live" aria-live="polite">
       <div><span class="k">Model</span><span class="v" id="mp">-</span><span class="s">of flagged cells were cleared</span><span class="v2" id="mr">-</span><span class="s">of all clearing caught</span></div>
       <div><span class="k">Distance-only baseline</span><span class="v" id="bp">-</span><span class="s">of flagged cells were cleared</span><span class="v2" id="br">-</span><span class="s">of all clearing caught</span></div>
     </div>

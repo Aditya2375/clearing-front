@@ -25,7 +25,7 @@ h1 em{font-style:normal;color:var(--lime)}
 .head h2{font:700 34px Sch,sans-serif;letter-spacing:-.02em;margin:0}.head p{margin:0;color:var(--mut);max-width:560px;font-size:15px}
 .tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
 .tabs button{font:500 13px Mono,monospace;color:var(--mut);background:transparent;border:1px solid var(--line);padding:9px 14px;cursor:pointer;border-radius:2px}
-.tabs button[aria-selected=true]{color:#0b100c;background:var(--lime);border-color:var(--lime)}
+.tabs button[aria-pressed=true]{color:#0b100c;background:var(--lime);border-color:var(--lime)}
 .tabs button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
 .stage{position:relative;border:1px solid var(--line);background:#070a08}
 canvas{display:block;width:100%;height:auto;image-rendering:pixelated}
@@ -52,3 +52,8 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;max-wi
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
 .tw{overflow-x:auto}table{min-width:560px}
+
+.stage{overflow:hidden}
+.tip{position:absolute;pointer-events:none;background:#000d;border:1px solid var(--line);padding:7px 10px;font:400 12px Mono,monospace;color:var(--tx);white-space:nowrap;z-index:2}
+.scale{position:absolute;left:14px;bottom:62px;display:flex;align-items:center;gap:8px;font:500 11px Mono,monospace;color:#fff;text-shadow:0 0 4px #000}
+.scale i{display:block;height:5px;border:1px solid #fff;border-top:none;width:var(--sw,60px)}
