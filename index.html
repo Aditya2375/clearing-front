@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<title>Clearing Front | Predicting where forest is cleared next</title>
+<meta name="description" content="A model that reads 15 years of tree-cover loss in northern Mato Grosso and ranks which standing forest gets cleared next. Scored on a part of the map it never trained on.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 fill=%27%230b100c%27/%3E%3Crect x=%273%27 y=%273%27 width=%2710%27 height=%2710%27 fill=%27%23c6f06a%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="top"><span class="logo">Clearing Front</span><nav><a href="#map">Map</a><a href="#score">Scorecard</a><a href="#method">Method</a><a href="https://github.com/Aditya2375/clearing-front" rel="noopener">Source</a></nav></header>
+<main>
+<section class="hero">
+  <p class="eyebrow">Northern Mato Grosso, Brazil &middot; 11.25&deg;S to 12.0&deg;S, 56.5&deg;W to 55.5&deg;W</p>
+  <h1>Where the forest goes <em>next.</em></h1>
+  <p class="lede">Using only what satellites had recorded by the end of 2015, the model ranks every patch of standing forest by how likely it is to be cleared in the next eight years. Then we check it against what actually happened, on a stretch of map it never saw.</p>
+  <dl class="figs">
+    <div><dt>Cells ranked</dt><dd data-k="cells">…</dd></div>
+    <div><dt>Cleared 2016 to 2023</dt><dd data-k="rate">…</dd></div>
+    <div><dt>Top 5% flagged, cleared</dt><dd data-k="p5">…</dd></div>
+    <div><dt>Versus picking at random</dt><dd data-k="lift">…</dd></div>
+  </dl>
+</section>
+
+<section id="map" class="mapsec">
+  <div class="head"><h2>The map</h2><p>Each dot is a 150 m cell, about 2 hectares. The line marks where training stops. Everything right of it is held-out ground.</p></div>
+  <div class="tabs" role="tablist" aria-label="Layer">
+    <button role="tab" data-layer="outcome" aria-selected="true">What happened</button>
+    <button role="tab" data-layer="risk" aria-selected="false">Model risk</button>
+    <button role="tab" data-layer="flag" aria-selected="false">Flagged vs outcome</button>
+  </div>
+  <div class="stage">
+    <canvas id="cv" width="800" height="600" aria-label="Map of forest, past clearing, model risk and later clearing"></canvas>
+    <div id="legend" class="legend"></div>
+  </div>
+  <div class="ctl" id="flagctl" hidden>
+    <label>Flag the riskiest <b id="pct">10</b>% of held-out forest<input id="slider" type="range" min="1" max="50" value="10"></label>
+    <div class="live">
+      <div><span class="k">Model</span><span class="v" id="mp">-</span><span class="s">of flagged cells were cleared</span><span class="v2" id="mr">-</span><span class="s">of all clearing caught</span></div>
+      <div><span class="k">Distance-only baseline</span><span class="v" id="bp">-</span><span class="s">of flagged cells were cleared</span><span class="v2" id="br">-</span><span class="s">of all clearing caught</span></div>
+    </div>
+    <p class="note">Computed in your browser from the held-out cells shown to the right of the line.</p>
+  </div>
+</section>
+
+<section id="score" class="score">
+  <div class="head"><h2>Scorecard</h2><p>All numbers are on the held-out east third of the map. <span id="nTest"></span></p></div>
+  <div class="tw"><table id="tbl"></table></div>
+  <div id="callout" class="callout"></div>
+  <h3>What the model leans on</h3>
+  <div id="imp" class="imp"></div>
+</section>
+
+<section id="method" class="method">
+  <div class="head"><h2>Method</h2></div>
+  <ol>
+    <li><b>Data.</b> Hansen/UMD/Google/USGS/NASA Global Forest Change v1.11: tree cover in 2000 and the year of tree-cover loss, from Landsat at 30 m. One 1 by 0.75 degree window, cut into 150 m cells.</li>
+    <li><b>Look-back only.</b> Features use loss up to 2015: distance to the nearest cleared land, the share of cleared land and of forest at 450 m to 9 km, how much of that clearing is recent (2013 to 2015), and canopy cover. No coordinates.</li>
+    <li><b>Label.</b> A forest cell (at least half tree cover at the end of 2015) is positive if any of it is lost in 2016 to 2023.</li>
+    <li><b>Split by place.</b> Train on the west two thirds, test on the east third, with a gap of 8 cells so the two sides share no neighbourhood.</li>
+    <li><b>Model.</b> Gradient-boosted trees (scikit-learn). Compared with a one-feature baseline (distance to cleared land) and with plain nearby-clearing density.</li>
+  </ol>
+  <p class="fine">Caveats. Tree-cover loss includes fire, logging and plantation harvest, not only conversion to farmland. The east of the window was cleared about twice as often as the west, so the test is harder than a random split, and swapping the roles (train east, test west) scores lower, which is reported above. The map is one region; results elsewhere will differ. Data licence: CC BY 4.0, Hansen et al., Science 342 (2013).</p>
+</section>
+</main>
+<footer><span>MIT licence</span><a href="https://github.com/Aditya2375/clearing-front" rel="noopener">github.com/Aditya2375/clearing-front</a></footer>
+<script src="js/app.js"></script>
+</body>
+</html>
